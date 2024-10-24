@@ -30,3 +30,13 @@ function operate(firstNumber, secondNumber, operator) {
             return divide(firstNumber, secondNumber);
     }
 }
+
+let displayValue;
+let calcDisplay = document.querySelector("#calculator-display");
+const numpad = document.querySelectorAll(".btn-number");
+numpad.forEach(button => {
+    button.addEventListener("click", () => {
+       calcDisplay.textContent = button.textContent;
+       displayValue = button.textContent;
+    });
+});
