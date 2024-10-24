@@ -41,10 +41,11 @@ button {
     margin: 2px;
 }
 
-.btn-zero {
-    width: 114px;
-}
+/*.btn-zero {*/
+/*    width: 114px;*/
+/*}*/
 
-.btn-clear {
+.btn-clear,
+.btn-zero {
     width: 173px;
 }
