@@ -19,6 +19,7 @@ const numpad = document.querySelectorAll(".btn-number");
 const operations = document.querySelectorAll(".btn-operation");
 const clearBtn = document.querySelector(".btn-clear");
 const equalsBtn = document.querySelector(".btn-equals");
+const decimalBtn = document.querySelector(".btn-decimal");
 
 let operator = null;
 let clearOnNextInput = false;
@@ -68,8 +69,8 @@ operations.forEach(operationButton => {
         if (operatorEntered) return; // Prevent multiple operator entries
 
         operator = operationButton.textContent;
-        operatorEntered = true;
         updateDisplay(currentDisplayValue + operator);
+        operatorEntered = true;
     });
 });
 
@@ -88,3 +89,11 @@ equalsBtn.addEventListener("click", () => {
     updateDisplay(roundedResult);
 });
 
+// Decimal button event listener
+decimalBtn.addEventListener("click", () => {
+    const currentDisplayValue = calcDisplay.textContent;
+    if (currentDisplayValue.includes('.')) return;
+    if (clearOnNextInput) clearDisplay(); // Reset state
+
+    updateDisplay(currentDisplayValue + '.');
+})
