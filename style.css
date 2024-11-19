@@ -41,10 +41,7 @@ button {
     margin: 2px;
 }
 
-.btn-zero {
-    width: 114px;
-}
-
+.btn-zero,
 .btn-clear {
-    width: 173px;
+    width: 114px;
 }

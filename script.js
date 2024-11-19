@@ -20,6 +20,7 @@ const operations = document.querySelectorAll(".btn-operation");
 const clearBtn = document.querySelector(".btn-clear");
 const equalsBtn = document.querySelector(".btn-equals");
 const decimalBtn = document.querySelector(".btn-decimal");
+const backspaceBtn = document.querySelector(".btn-backspace");
 
 let operator = null;
 let clearOnNextInput = false;
@@ -96,4 +97,15 @@ decimalBtn.addEventListener("click", () => {
     if (clearOnNextInput) clearDisplay(); // Reset state
 
     updateDisplay(currentDisplayValue + '.');
-})
+});
+
+// Backspace button event listener
+backspaceBtn.addEventListener("click", () => {
+    const currentDisplayValue = calcDisplay.textContent;
+    if (clearOnNextInput) clearDisplay(); // Reset state
+
+    const newDisplayValue = currentDisplayValue.length > 1 ? currentDisplayValue.slice(0, -1): '0';
+
+    updateDisplay(newDisplayValue);
+});
+
