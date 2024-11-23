@@ -21,6 +21,7 @@ const clearBtn = document.querySelector(".btn-clear");
 const equalsBtn = document.querySelector(".btn-equals");
 const decimalBtn = document.querySelector(".btn-decimal");
 const backspaceBtn = document.querySelector(".btn-backspace");
+const body = document.querySelector('body');
 
 let operator = null;
 let clearOnNextInput = false;
@@ -50,36 +51,24 @@ const roundResult = (result) => {
     return result;
 }
 
-// Number button event listeners
-numpad.forEach(numberButton => {
-    numberButton.addEventListener("click", () => {
-        const currentDisplayValue = calcDisplay.textContent;
-        const buttonText = numberButton.textContent;
+const handleNumberInput = (input) => {
+    const currentDisplayValue = calcDisplay.textContent;
 
-        // Clear or update the display based on the current state
-        if (clearOnNextInput) clearDisplay(buttonText);
-        else updateDisplay(currentDisplayValue === '0' ? buttonText : currentDisplayValue + buttonText);
-    });
-});
+    if (clearOnNextInput) clearDisplay(input);
+    else updateDisplay(currentDisplayValue === '0' ? input : currentDisplayValue + input);
+}
 
-// Operator button event listeners
-operations.forEach(operationButton => {
-    operationButton.addEventListener("click", () => {
-        const currentDisplayValue = calcDisplay.textContent;
-        if (clearOnNextInput) clearDisplay(); // Reset state
-        if (operatorEntered) return; // Prevent multiple operator entries
+const handleOperatorInput = (input) => {
+    const currentDisplayValue = calcDisplay.textContent;
+    if (clearOnNextInput) clearDisplay(); // Reset state
+    if (operatorEntered) return; // Prevent multiple operator entries
 
-        operator = operationButton.textContent;
-        updateDisplay(currentDisplayValue + operator);
-        operatorEntered = true;
-    });
-});
+    operator = input;
+    updateDisplay(currentDisplayValue + operator);
+    operatorEntered = true;
+}
 
-// Clear button event listener
-clearBtn.addEventListener("click", clearDisplay);
-
-// Equals button event listener
-equalsBtn.addEventListener("click", () => {
+const handleClickEquals = () => {
     if (clearOnNextInput) return;
     [firstNumber, secondNumber] = calcDisplay.textContent.split(operator).map(Number);
     if (firstNumber === null || secondNumber === null || operator === null) return;
@@ -88,24 +77,81 @@ equalsBtn.addEventListener("click", () => {
     let roundedResult = roundResult(result);
     clearOnNextInput = true;
     updateDisplay(roundedResult);
-});
+}
 
-// Decimal button event listener
-decimalBtn.addEventListener("click", () => {
+const handleClickBackspace = () => {
+    const currentDisplayValue = calcDisplay.textContent;
+    if (clearOnNextInput) clearDisplay(); // Reset state
+
+    const newDisplayValue = currentDisplayValue.length > 1 ? currentDisplayValue.slice(0, -1): '0';
+    updateDisplay(newDisplayValue);
+}
+
+const handleClickDecimal = () => {
     const currentDisplayValue = calcDisplay.textContent;
     if (currentDisplayValue.includes('.')) return;
     if (clearOnNextInput) clearDisplay(); // Reset state
 
     updateDisplay(currentDisplayValue + '.');
+}
+
+// Number button event listeners
+numpad.forEach(numberButton => {
+    numberButton.addEventListener("click", () => {
+        handleNumberInput(numberButton.textContent);
+    });
 });
+
+// Operator button event listeners
+operations.forEach(operationButton => {
+    operationButton.addEventListener("click", () => {
+        handleOperatorInput(operationButton.textContent);
+    });
+});
+
+// Clear button event listener
+clearBtn.addEventListener("click", clearDisplay);
+
+// Equals button event listener
+equalsBtn.addEventListener("click", handleClickEquals);
 
 // Backspace button event listener
-backspaceBtn.addEventListener("click", () => {
-    const currentDisplayValue = calcDisplay.textContent;
-    if (clearOnNextInput) clearDisplay(); // Reset state
+backspaceBtn.addEventListener("click", handleClickBackspace);
 
-    const newDisplayValue = currentDisplayValue.length > 1 ? currentDisplayValue.slice(0, -1): '0';
+// Decimal button event listener
+decimalBtn.addEventListener("click", handleClickDecimal);
 
-    updateDisplay(newDisplayValue);
+// Listen for key presses
+body.addEventListener('keydown', (event) => {
+    const keyPress = event.key;
+
+    if (keyPress >= '0' && keyPress <= '9') {
+        handleNumberInput(keyPress);
+    }
+    else {
+        switch (keyPress) {
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+                handleOperatorInput(keyPress);
+                break;
+            case '=':
+            case 'Enter':
+                event.preventDefault();
+                handleClickEquals();
+                break;
+            case 'Backspace':
+                handleClickBackspace();
+                break;
+            case '.':
+                handleClickDecimal();
+                break;
+            default:
+                console.log(`Other key pressed: ${keyPress}`);
+                break;
+        }
+    }
 });
+
 
